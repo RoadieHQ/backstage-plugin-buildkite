@@ -13,17 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { createPlugin, createRouteRef } from '@backstage/core';
-import ExampleComponent from './components/ExampleComponent';
-
-export const rootRouteRef = createRouteRef({
-  path: '/buildkite',
-  title: 'buildkite',
-});
+import { createPlugin, createApiFactory, discoveryApiRef } from '@backstage/core';
+import { buildKiteApiRef, BuildKiteApi } from './api';
 
 export const plugin = createPlugin({
   id: 'buildkite',
-  register({ router }) {
-    router.addRoute(rootRouteRef, ExampleComponent);
-  },
+  apis: [
+    createApiFactory({
+      api: buildKiteApiRef,
+      deps: { discoveryApi: discoveryApiRef },
+      factory: ({ discoveryApi }) => new BuildKiteApi({ discoveryApi }),
+    }),
+  ],
 });

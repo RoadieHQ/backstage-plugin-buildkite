@@ -13,5 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-export { plugin } from './plugin';
-export { Router, isPluginApplicableToEntity } from './components/Router';
+import { Entity } from '@backstage/catalog-model';
+
+export const useProjectEntity = (entity: Entity) => {
+  const projectSlug = entity.metadata?.annotations?.['buildkite.com/project-slug'] as string;
+  return {
+    owner: projectSlug.split('/')[0],
+    repo: projectSlug.split('/')[1],
+  };
+};
