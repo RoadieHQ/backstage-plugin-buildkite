@@ -13,5 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-export { plugin } from './plugin';
-export { Router, isPluginApplicableToEntity } from './components/Router';
+
+import { createRouteRef } from '@backstage/core';
+
+export const buildKiteRouteRef = createRouteRef({
+  path: '',
+  title: 'BuildKite | All builds',
+});
+
+export const buildKiteBuildRouteRef = createRouteRef({
+  path: ':buildId',
+  title: 'BuildKite | Build info',
+});

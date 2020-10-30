@@ -24,9 +24,10 @@ import {
   HeaderLabel,
   SupportButton,
 } from '@backstage/core';
-import ExampleFetchComponent from '../ExampleFetchComponent';
+import BuildKiteBuildsTable from '../BuildKiteBuildsTable';
+import { Entity } from '@backstage/catalog-model';
 
-const ExampleComponent: FC<{}> = () => (
+const ExampleComponent: FC<{entity: Entity}> = ({ entity }) => (
   <Page themeId="tool">
     <Header title="Welcome to backstage-plugin-buildkite!" subtitle="Optional subtitle">
       <HeaderLabel label="Owner" value="Team X" />
@@ -45,7 +46,7 @@ const ExampleComponent: FC<{}> = () => (
           </InfoCard>
         </Grid>
         <Grid item>
-          <ExampleFetchComponent />
+          <BuildKiteBuildsTable entity={ entity } />
         </Grid>
       </Grid>
     </Content>
