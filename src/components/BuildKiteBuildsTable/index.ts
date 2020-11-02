@@ -14,4 +14,3 @@
  * limitations under the License.
  */
 export { default } from './BuildKiteBuildsTable';
-export type { CITableBuildInfo } from './BuildKiteBuildsTable';

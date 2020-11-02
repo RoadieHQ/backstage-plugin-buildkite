@@ -21,44 +21,14 @@ import RetryIcon from '@material-ui/icons/Replay';
 import GitHubIcon from '@material-ui/icons/GitHub';
 import { Entity } from '@backstage/catalog-model';
 import moment from 'moment';
-import { buildKiteBuildRouteRef } from '../route-refs';
+import { buildKiteBuildRouteRef } from '../routeRefs';
 import { useBuilds } from '../useBuilds';
 import { useProjectEntity } from '../useProjectEntity';
 import { BuildKiteStatus } from './components/BuildKiteRunStatus';
+import { BuildKiteBuildInfo, TableProps } from '../types';
 
 const getElapsedTime = (start: string) => {
   return moment(start).fromNow();
-};
-
-export type BuildKiteTableBuildInfo = {
-  id: string;
-  number: number;
-  message: string;
-  branch: string;
-  commit: string;
-  pipeline: {
-    provider: {
-      repository: string;
-    };
-  };
-  created_at: string;
-  state: string;
-  rebuilt_from: {
-    id: string;
-  };
-  onRestartClick: () => void;
-};
-
-type TableProps = {
-  loading: boolean;
-  retry: () => void;
-  builds: BuildKiteTableBuildInfo[];
-  projectName: string;
-  page: number;
-  onChangePage: (page: number) => void;
-  total: number;
-  pageSize: number;
-  onChangePageSize: (pageSize: number) => void;
 };
 
 const generatedColumns: TableColumn[] = [
@@ -67,7 +37,7 @@ const generatedColumns: TableColumn[] = [
     field: 'number',
     highlight: true,
     width: '5%',
-    render: (row: Partial<BuildKiteTableBuildInfo>) => {
+    render: (row: Partial<BuildKiteBuildInfo>) => {
       return (
           row.number
       );
@@ -77,14 +47,14 @@ const generatedColumns: TableColumn[] = [
     title: 'Build',
     field: 'message',
     highlight: true,
-    render: (row: Partial<BuildKiteTableBuildInfo>) => {
+    render: (row: Partial<BuildKiteBuildInfo>) => {
       return (
         <p>
           {row.rebuilt_from?.id &&  'retry of: '}
           <Link
             component={RouterLink}
             to={generatePath(buildKiteBuildRouteRef.path, {
-              buildId: row.id as string,
+              buildNumber: (row.number as number).toString(),
             })}
           >
           {row.message}
@@ -96,7 +66,7 @@ const generatedColumns: TableColumn[] = [
   {
     title: 'Source',
     field: 'commit',
-    render: (row: Partial<BuildKiteTableBuildInfo>) => (
+    render: (row: Partial<BuildKiteBuildInfo>) => (
       <>
         <p>
             {row.branch}
@@ -109,7 +79,7 @@ const generatedColumns: TableColumn[] = [
   {
     title: 'Status',
     field: 'state',
-    render: (row: Partial<BuildKiteTableBuildInfo>) => {
+    render: (row: Partial<BuildKiteBuildInfo>) => {
       return (
         <Box display="flex" alignItems="center">
           <BuildKiteStatus status={row.state} />
@@ -119,14 +89,14 @@ const generatedColumns: TableColumn[] = [
   },
   {
     title: 'Created',
-    render: (row: Partial<BuildKiteTableBuildInfo>) => {
+    render: (row: Partial<BuildKiteBuildInfo>) => {
       return getElapsedTime(row.created_at as string);
     },
   },
   {
     title: 'Actions',
     sorting: false,
-    render: (row: Partial<BuildKiteTableBuildInfo>) => (
+    render: (row: Partial<BuildKiteBuildInfo>) => (
       <IconButton onClick={row.onRestartClick}>
         <RetryIcon />
       </IconButton>

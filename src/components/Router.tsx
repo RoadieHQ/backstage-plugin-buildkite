@@ -16,11 +16,12 @@
 
 import React from 'react';
 import { Routes, Route } from 'react-router';
-import { buildKiteRouteRef, buildKiteBuildRouteRef } from './route-refs';
-import BuildKiteBuildsTable from './BuildKiteBuildsTable';
-import { BUILDKITE_ANNOTATION } from '../consts';
+import { buildKiteRouteRef, buildKiteBuildRouteRef } from './routeRefs';
 import { Entity } from '@backstage/catalog-model';
 import { MissingAnnotationEmptyState } from '@backstage/core';
+import BuildKiteBuildsTable from './BuildKiteBuildsTable';
+import BuildKiteBuildView from './BuildKiteBuildView';
+import { BUILDKITE_ANNOTATION } from '../consts';
 
 export const isPluginApplicableToEntity = (entity: Entity) =>
   Boolean(entity.metadata.annotations?.[BUILDKITE_ANNOTATION]);
@@ -33,7 +34,7 @@ export const Router = ({ entity }: { entity: Entity }) =>
       <Route path={`/${buildKiteRouteRef.path}`} element={<BuildKiteBuildsTable entity={ entity } />} />
       <Route
         path={`/${buildKiteBuildRouteRef.path}`}
-        element={<BuildKiteBuildsTable entity={ entity } />}
+        element={<BuildKiteBuildView entity={ entity } />}
       />
     </Routes>
   );
