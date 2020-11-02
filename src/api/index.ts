@@ -26,7 +26,7 @@ const DEFAULT_PROXY_PATH = '/buildkite/api';
 type Options = {
   discoveryApi: DiscoveryApi;
   /**
-   * Path to use for requests via the proxy, defaults to /circleci/api
+   * Path to use for requests via the proxy, defaults to /buildkite/api
    */
   proxyPath?: string;
 };
@@ -45,10 +45,17 @@ export class BuildKiteApi {
     return `${proxyUrl}${this.proxyPath}`;
   }
 
-  async getBuilds() {
+  async getBuilds(page: number, per_page: number) {
     const url = await this.getApiUrl();
-    const request = await fetch(`${url}/builds`);
-    const response = request.json();
-    return response;
+    const request = await fetch(`${url}/builds?page=${page}&per_page=${per_page}`);
+    return request.json();
+  }
+
+  async restartBuild(orgSlug: string, pipelineSlug: string, buildId: string) {
+    const url = await this.getApiUrl();
+    const request = await fetch(`${url}/organizations/${orgSlug}/pipelines/${pipelineSlug}/builds/${buildId}/rebuild`, {
+      method: 'PUT',
+    });
+    return request.json();
   }
 }

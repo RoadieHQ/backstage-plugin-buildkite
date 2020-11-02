@@ -14,47 +14,37 @@
  * limitations under the License.
  */
 import React, { FC } from 'react';
-import { makeStyles } from '@material-ui/core/styles';
 import { generatePath, Link as RouterLink } from 'react-router-dom';
 import { Box, IconButton, Link, Typography } from '@material-ui/core';
 import { Table, TableColumn } from '@backstage/core';
 import RetryIcon from '@material-ui/icons/Replay';
 import GitHubIcon from '@material-ui/icons/GitHub';
 import { Entity } from '@backstage/catalog-model';
+import moment from 'moment';
 import { buildKiteBuildRouteRef } from '../route-refs';
 import { useBuilds } from '../useBuilds';
 import { useProjectEntity } from '../useProjectEntity';
 import { BuildKiteStatus } from './components/BuildKiteRunStatus';
 
-const useStyles = makeStyles({
-  avatar: {
-    height: 32,
-    width: 32,
-    borderRadius: '50%',
-  },
-});
+const getElapsedTime = (start: string) => {
+  return moment(start).fromNow();
+};
 
-export type CITableBuildInfo = {
+export type BuildKiteTableBuildInfo = {
   id: string;
   number: number;
-  buildName: string;
-  buildUrl: string;
-  source: {
-    branchName: string;
-    url: string;
-    displayName: string;
-    author?: string;
-    commit: {
-      hash: string;
+  message: string;
+  branch: string;
+  commit: string;
+  pipeline: {
+    provider: {
+      repository: string;
     };
   };
+  created_at: string;
   state: string;
-  tests?: {
-    total: number;
-    passed: number;
-    skipped: number;
-    failed: number;
-    testUrl: string;
+  rebuilt_from: {
+    id: string;
   };
   onRestartClick: () => void;
 };
@@ -62,7 +52,7 @@ export type CITableBuildInfo = {
 type TableProps = {
   loading: boolean;
   retry: () => void;
-  builds: CITableBuildInfo[];
+  builds: BuildKiteTableBuildInfo[];
   projectName: string;
   page: number;
   onChangePage: (page: number) => void;
@@ -76,7 +66,8 @@ const generatedColumns: TableColumn[] = [
     title: 'Id',
     field: 'number',
     highlight: true,
-    render: (row: Partial<CITableBuildInfo>) => {
+    width: '5%',
+    render: (row: Partial<BuildKiteTableBuildInfo>) => {
       return (
           row.number
       );
@@ -84,39 +75,41 @@ const generatedColumns: TableColumn[] = [
   },
   {
     title: 'Build',
-    field: 'buildName',
+    field: 'message',
     highlight: true,
-    render: (row: Partial<CITableBuildInfo>) => {
+    render: (row: Partial<BuildKiteTableBuildInfo>) => {
       return (
-        <Link
-          component={RouterLink}
-          to={generatePath(buildKiteBuildRouteRef.path, {
-            buildId: row.id as string,
-          })}
-        >
-          {row.id}
+        <p>
+          {row.rebuilt_from?.id &&  'retry of: '}
+          <Link
+            component={RouterLink}
+            to={generatePath(buildKiteBuildRouteRef.path, {
+              buildId: row.id as string,
+            })}
+          >
+          {row.message}
         </Link>
+        </p>
       );
     },
   },
   {
     title: 'Source',
-    field: 'source',
-    render: (row: Partial<CITableBuildInfo>) => (
+    field: 'commit',
+    render: (row: Partial<BuildKiteTableBuildInfo>) => (
       <>
         <p>
-          <Link href={row.source?.url || ''} target="_blank">
-            {row.source?.branchName}
-          </Link>
+            {row.branch}
         </p>
-        <p>{row.source?.commit?.hash}</p>
+        <p>{row.commit}</p>
       </>
     ),
+    width: '45%',
   },
   {
     title: 'Status',
-    field: 'status',
-    render: (row: Partial<CITableBuildInfo>) => {
+    field: 'state',
+    render: (row: Partial<BuildKiteTableBuildInfo>) => {
       return (
         <Box display="flex" alignItems="center">
           <BuildKiteStatus status={row.state} />
@@ -125,37 +118,20 @@ const generatedColumns: TableColumn[] = [
     },
   },
   {
-    title: 'Tests',
-    sorting: false,
-    render: (row: Partial<CITableBuildInfo>) => {
-      return (
-        <>
-          <p>
-            {row.tests && (
-              <Link href={row.tests.testUrl || ''} target="_blank">
-                {row.tests.passed} / {row.tests.total} passed
-                {/* <FailSkippedWidget
-                  skipped={row.tests.skipped}
-                  failed={row.tests.failed}
-                /> */}
-              </Link>
-            )}
-
-            {!row.tests && 'n/a'}
-          </p>
-        </>
-      );
+    title: 'Created',
+    render: (row: Partial<BuildKiteTableBuildInfo>) => {
+      return getElapsedTime(row.created_at as string);
     },
   },
   {
     title: 'Actions',
     sorting: false,
-    render: (row: Partial<CITableBuildInfo>) => (
+    render: (row: Partial<BuildKiteTableBuildInfo>) => (
       <IconButton onClick={row.onRestartClick}>
         <RetryIcon />
       </IconButton>
     ),
-    width: '10%',
+    width: '5%',
   },
 ];
 
@@ -169,9 +145,7 @@ export const CITableView: FC<TableProps> = ({
   onChangePage,
   onChangePageSize,
   total,
-}) =>  {
-  console.log(builds);
-  return (
+}) =>  (
   <Table
     isLoading={loading}
     options={{ paging: true, pageSize, padding: 'dense' }}
@@ -198,7 +172,6 @@ export const CITableView: FC<TableProps> = ({
     columns={generatedColumns}
   />
 );
-};
 
 const BuildKiteBuildsTable: FC<{entity: Entity}> = ({ entity }) => {
   const { owner, repo } = useProjectEntity(entity);
