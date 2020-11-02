@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Spotify AB
+ * Copyright 2020 RoadieHQ
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,59 +14,26 @@
  * limitations under the License.
  */
 import { errorApiRef, useApi } from '@backstage/core';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useState } from 'react';
 import { useAsyncRetry } from 'react-use';
 import { buildKiteApiRef } from '../api';
-import type { CITableBuildInfo } from './BuildKiteBuildsTable';
-import { useEntity } from '@backstage/plugin-catalog';
-import { BUILDKITE_ANNOTATION } from '../consts';
+import type { BuildKiteTableBuildInfo } from './BuildKiteBuildsTable';
 
-const makeReadableStatus = (status: string | undefined) => {
-  if (!status) return '';
-  return ({
-    retried: 'Retried',
-    canceled: 'Canceled',
-    infrastructure_fail: 'Infra fail',
-    timedout: 'Timedout',
-    not_run: 'Not run',
-    running: 'Running',
-    failed: 'Failed',
-    queued: 'Queued',
-    scheduled: 'Scheduled',
-    not_running: 'Not running',
-    no_tests: 'No tests',
-    fixed: 'Fixed',
-    success: 'Success',
-  } as Record<string, string>)[status];
+export const transform = (
+  buildsData: BuildKiteTableBuildInfo[],
+  restartBuild: { (orgSlug: string, pipelineSlug: string, buildId: string): Promise<void> },
+): BuildKiteTableBuildInfo[] => {
+  return buildsData.map(buildData => {
+    const tableBuildInfo: BuildKiteTableBuildInfo = {
+      ...buildData,
+      onRestartClick: () => {
+        const splitUrl = buildData.url.split('/');
+        restartBuild(splitUrl[5], buildData.pipeline.slug, buildData.number);
+      }
+    };
+    return tableBuildInfo;
+  });
 };
-
-// export const transform = (
-//   buildsData: BuildSummary[],
-//   restartBuild: { (buildId: number): Promise<void> },
-// ): CITableBuildInfo[] => {
-//   return buildsData.map(buildData => {
-//     const tableBuildInfo: CITableBuildInfo = {
-//       id: String(buildData.build_num),
-//       buildName: buildData.subject
-//         ? buildData.subject +
-//           (buildData.retry_of ? ` (retry of #${buildData.retry_of})` : '')
-//         : '',
-//       onRestartClick: () =>
-//         typeof buildData.build_num !== 'undefined' &&
-//         restartBuild(buildData.build_num),
-//       source: {
-//         branchName: String(buildData.branch),
-//         commit: {
-//           hash: String(buildData.vcs_revision),
-//           url: 'todo',
-//         },
-//       },
-//       status: makeReadableStatus(buildData.status),
-//       buildUrl: buildData.build_url,
-//     };
-//     return tableBuildInfo;
-//   });
-// };
 
 export const useBuilds = ({owner, repo}: {owner: string, repo: string}) => {
   // const { repo, owner, vcs } = useProjectSlugFromEntity();
@@ -80,7 +47,7 @@ export const useBuilds = ({owner, repo}: {owner: string, repo: string}) => {
   const getBuilds = useCallback(
     async ({ limit, offset }: { limit: number; offset: number }) => {
       try {
-        return await api.getBuilds();
+        return await api.getBuilds(offset + 1, limit);
       } catch (e) {
         errorApi.post(e);
         return Promise.reject(e);
@@ -89,24 +56,24 @@ export const useBuilds = ({owner, repo}: {owner: string, repo: string}) => {
     [repo, owner, api, errorApi],
   );
 
-  const restartBuild = async (buildId: number) => {
+  const restartBuild = async (orgSlug: string, pipelineSlug: string, buildId: string) => {
     try {
-      await api.getBuilds();
+      return await api.restartBuild(orgSlug, pipelineSlug, buildId).then(() => getBuilds({limit: page + 1, offset: pageSize}));
     } catch (e) {
       errorApi.post(e);
+      return Promise.reject(e);
     }
   };
-
-  useEffect(() => {
-    getBuilds({limit: 5, offset: 5});
-    // getBuilds({ limit: 1, offset: 0 }).then(b => setTotal(b?.[0].build_num!));
-  }, [repo, getBuilds]);
 
   const { loading, value, retry } = useAsyncRetry(
     () =>
       getBuilds({
-        offset: page * pageSize,
         limit: pageSize,
+        offset: page,
+      })
+      .then(builds => {
+        if(page === 0) setTotal(builds?.[0].number);
+        return transform(builds ?? [], restartBuild) as any;
       }),
     [page, pageSize, getBuilds],
   );
