@@ -51,11 +51,23 @@ export class BuildKiteApi {
     return request.json();
   }
 
-  async restartBuild(orgSlug: string, pipelineSlug: string, buildId: string) {
+  async restartBuild(orgSlug: string, pipelineSlug: string, buildNumber: number) {
     const url = await this.getApiUrl();
-    const request = await fetch(`${url}/organizations/${orgSlug}/pipelines/${pipelineSlug}/builds/${buildId}/rebuild`, {
+    const request = await fetch(`${url}/organizations/${orgSlug}/pipelines/${pipelineSlug}/builds/${buildNumber}/rebuild`, {
       method: 'PUT',
     });
     return request.json();
+  }
+
+  async getSingleBuild(orgSlug: string, pipelineSlug: string, buildNumber: number) {
+    const url = await this.getApiUrl();
+    const request = await fetch(`${url}/organizations/${orgSlug}/pipelines/${pipelineSlug}/builds/${buildNumber}`);
+    return request.json();
+  }
+
+  async getLog(orgSlug: string, pipelineSlug: string, buildNumber: number, buildId: string) {
+    const url = await this.getApiUrl();
+    const request = await fetch(`${url}/organizations/${orgSlug}/pipelines/${pipelineSlug}/builds/${buildNumber}/jobs/${buildId}/log`);
+    return request.json();  
   }
 }

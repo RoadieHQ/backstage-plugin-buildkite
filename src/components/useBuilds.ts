@@ -17,14 +17,14 @@ import { errorApiRef, useApi } from '@backstage/core';
 import { useCallback, useState } from 'react';
 import { useAsyncRetry } from 'react-use';
 import { buildKiteApiRef } from '../api';
-import type { BuildKiteTableBuildInfo } from './BuildKiteBuildsTable';
+import { BuildKiteBuildInfo } from './types';
 
 export const transform = (
-  buildsData: BuildKiteTableBuildInfo[],
-  restartBuild: { (orgSlug: string, pipelineSlug: string, buildId: string): Promise<void> },
-): BuildKiteTableBuildInfo[] => {
+  buildsData: BuildKiteBuildInfo[],
+  restartBuild: { (orgSlug: string, pipelineSlug: string, buildNumber: number): Promise<void> },
+): BuildKiteBuildInfo[] => {
   return buildsData.map(buildData => {
-    const tableBuildInfo: BuildKiteTableBuildInfo = {
+    const tableBuildInfo: BuildKiteBuildInfo = {
       ...buildData,
       onRestartClick: () => {
         const splitUrl = buildData.url.split('/');
@@ -55,10 +55,10 @@ export const useBuilds = ({owner, repo}: {owner: string, repo: string}) => {
     },
     [repo, owner, api, errorApi],
   );
-
-  const restartBuild = async (orgSlug: string, pipelineSlug: string, buildId: string) => {
+ 
+  const restartBuild = async (orgSlug: string, pipelineSlug: string, buildNumber: number) => {
     try {
-      return await api.restartBuild(orgSlug, pipelineSlug, buildId).then(() => getBuilds({limit: page + 1, offset: pageSize}));
+      return await api.restartBuild(orgSlug, pipelineSlug, buildNumber).then(() => getBuilds({limit: page, offset: pageSize}));
     } catch (e) {
       errorApi.post(e);
       return Promise.reject(e);
@@ -84,7 +84,7 @@ export const useBuilds = ({owner, repo}: {owner: string, repo: string}) => {
     {
       page,
       pageSize,
-      loading,
+      loading: loading ,
       builds: value,
       projectName,
       total,

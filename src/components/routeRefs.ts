@@ -13,4 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-export { default } from './ExampleComponent';
+
+import { createRouteRef } from '@backstage/core';
+
+export const buildKiteRouteRef = createRouteRef({
+  path: '',
+  title: 'BuildKite | All builds',
+});
+
+export const buildKiteBuildRouteRef = createRouteRef({
+  path: ':buildNumber',
+  title: 'BuildKite | Build info',
+});
