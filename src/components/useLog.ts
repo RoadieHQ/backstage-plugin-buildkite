@@ -13,37 +13,34 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { useCallback } from 'react';
 import { errorApiRef, useApi } from '@backstage/core';
-import { useAsync } from 'react-use';
+import { useAsyncFn } from 'react-use';
 import { buildKiteApiRef } from '../api';
 
-export const useLog = (
-  {
-    owner, repo, buildNumber, buildId
-  } : {
-    owner: string, repo: string, buildNumber: number, buildId: string
-  }
-) => {
-  // const { repo, owner, vcs } = useProjectSlugFromEntity();
+export const useLog = (url: string) => {
   const api = useApi(buildKiteApiRef);
   const errorApi = useApi(errorApiRef);
 
+  const getLogs = useCallback(async () => {
+    try {
+      const build = await api.getLog(
+        url,
+      );
+      return Promise.resolve(build);
+    } catch (e) {
+      errorApi.post(e);
+      return Promise.reject(e);
+    }
+  }, [url, api, errorApi]);
+  
+  const [state, fetchLogs] = useAsyncFn(() => getLogs(), [
+    getLogs,
+  ]);
 
-  const { loading, value, error } = useAsync(
-    async () => {
-      try {
-        return await api.getLog(
-          owner,
-          repo,
-          buildNumber,
-          buildId,
-        )
-      } catch (e) {
-        errorApi.post(e);
-        return Promise.reject(e);
-      }
-    }, [],
-  );
-
-  return { loading, value, error };
+  return { 
+    value: state.value,
+    error: state.error,
+    fetchLogs
+  };
 }

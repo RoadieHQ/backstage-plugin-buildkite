@@ -15,9 +15,10 @@
  */
 import React, { FC } from 'react';
 import { generatePath, Link as RouterLink } from 'react-router-dom';
-import { Box, IconButton, Link, Typography } from '@material-ui/core';
+import { Box, IconButton, Link, Typography, Tooltip } from '@material-ui/core';
 import { Table, TableColumn } from '@backstage/core';
 import RetryIcon from '@material-ui/icons/Replay';
+import SyncIcon from '@material-ui/icons/Sync';
 import GitHubIcon from '@material-ui/icons/GitHub';
 import { Entity } from '@backstage/catalog-model';
 import moment from 'moment';
@@ -97,9 +98,11 @@ const generatedColumns: TableColumn[] = [
     title: 'Actions',
     sorting: false,
     render: (row: Partial<BuildKiteBuildInfo>) => (
-      <IconButton onClick={row.onRestartClick}>
-        <RetryIcon />
-      </IconButton>
+      <Tooltip title="Rebuild">
+        <IconButton onClick={row.onRestartClick}>
+          <SyncIcon />
+        </IconButton>
+      </Tooltip>
     ),
     width: '5%',
   },
