@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React, { FC } from 'react';
+import React, { FC, useEffect } from 'react';
 import { 
   Typography,
   Grid,
@@ -27,7 +27,6 @@ import {
   Page,
   Content,
   Link as MaterialLink,
-  Progress,
 } from '@backstage/core';
 import { useParams } from 'react-router-dom';
 import Alert from '@material-ui/lab/Alert';
@@ -68,6 +67,7 @@ const useStyles = makeStyles(theme => ({
   },
   cardContent: {
     backgroundColor: theme.palette.background.default,
+    padding: '0!important',
   },
   success: {
     position: 'relative',
@@ -87,7 +87,7 @@ const useStyles = makeStyles(theme => ({
 const BuildName: FC<{ build: BuildKiteBuildInfo }> = ({ build }) => (
   <Box display="flex" alignItems="center">
     #{ build?.number } - { build?.message }
-    <IconButton href={ build?.web_url as string } target="_blank">
+    <IconButton href={ build?.web_url as string } target="_blank" rel="noopener noreferrer">
       <LaunchIcon />
     </IconButton>
   </Box>
@@ -95,10 +95,10 @@ const BuildName: FC<{ build: BuildKiteBuildInfo }> = ({ build }) => (
 
 const pickClassName = (
   classes: ReturnType<typeof useStyles>,
-  build: BuildKiteBuildInfo = {} as BuildKiteBuildInfo,
+  build: BuildKiteJob,
 ) => {
   if (build.state === 'failed') return classes.failed;
-  if (['running', 'queued', 'scheduled'].includes(build.state)) return classes.running;
+  if (['running', 'queued', 'scheduled', 'assigned'].includes(build.state)) return classes.running;
   if (build.state === 'passed') return classes.success;
   return classes.neutral;
 };
@@ -111,9 +111,10 @@ const ActionsList: FC<{ jobs: BuildKiteJob[]}> = ({
     <>
       {jobs.map((job: BuildKiteJob) => (
         <ActionOutput
-          className={job.state === 'failed' ? classes.failed : classes.success}
+        className={pickClassName(classes, job)}
           job={job}
           url={job.log_url || ''}
+          key={job.id}
         />
       ))}
     </>
@@ -133,11 +134,24 @@ const BuildKiteBuildView: FC<{entity: Entity}> = ({ entity }) => {
   const classes = useStyles(); 
   const { buildNumber } = useParams() as any;
   const { owner, repo } = useProjectEntity(entity);
-  const { loading, value, error } = useSingleBuild({ owner, repo, buildNumber });
+  const { value, error, fetchBuildData } = useSingleBuild({ owner, repo, buildNumber });
 
-  if (loading) {
-    return <Progress />;
-  } else if (error) {
+  useEffect(() => {
+    fetchBuildData();
+  }, [fetchBuildData]);
+
+  useEffect(() => {
+    let timer: ReturnType<typeof setTimeout>;
+    if(value?.state === 'running' || value?.state === 'schedudled') {
+      timer = setTimeout(() => {
+        fetchBuildData();
+      }, 1500);
+      
+    }
+    return () => clearTimeout(timer);
+  }, [value, fetchBuildData]);
+
+  if (error) {
     return <Alert severity="error">{error.message}</Alert>;
   }
 
@@ -152,11 +166,10 @@ const BuildKiteBuildView: FC<{entity: Entity}> = ({ entity }) => {
           <Grid item>
             <Box mt={3}>
               <InfoCard
-                className={pickClassName(classes, value)}
                 title={<BuildName build={value} />}
                 cardClassName={classes.cardContent}
               >
-                {loading ? <Progress /> : <BuildsList build={value} />}
+                <BuildsList build={value} />
               </InfoCard>
             </Box>
           </Grid>

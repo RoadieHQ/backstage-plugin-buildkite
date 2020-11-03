@@ -18,17 +18,17 @@ import { useCallback, useState } from 'react';
 import { useAsyncRetry } from 'react-use';
 import { buildKiteApiRef } from '../api';
 import { BuildKiteBuildInfo } from './types';
+import { generateRequestUrl } from './utils';
 
 export const transform = (
   buildsData: BuildKiteBuildInfo[],
-  restartBuild: { (orgSlug: string, pipelineSlug: string, buildNumber: number): Promise<void> },
+  restartBuild: (requestUrl: string) => Promise<void>,
 ): BuildKiteBuildInfo[] => {
   return buildsData.map(buildData => {
     const tableBuildInfo: BuildKiteBuildInfo = {
       ...buildData,
       onRestartClick: () => {
-        const splitUrl = buildData.url.split('/');
-        restartBuild(splitUrl[5], buildData.pipeline.slug, buildData.number);
+        restartBuild(generateRequestUrl(buildData.url));
       }
     };
     return tableBuildInfo;
@@ -43,6 +43,7 @@ export const useBuilds = ({owner, repo}: {owner: string, repo: string}) => {
   const [total, setTotal] = useState(0);
   const [page, setPage] = useState(0);
   const [pageSize, setPageSize] = useState(5);
+  const [state, setState] = useState([]);
 
   const getBuilds = useCallback(
     async ({ limit, offset }: { limit: number; offset: number }) => {
@@ -53,19 +54,21 @@ export const useBuilds = ({owner, repo}: {owner: string, repo: string}) => {
         return Promise.reject(e);
       }
     },
-    [repo, owner, api, errorApi],
+    [api, errorApi],
   );
  
-  const restartBuild = async (orgSlug: string, pipelineSlug: string, buildNumber: number) => {
+  const restartBuild = async (requestUrl: string) => {
     try {
-      return await api.restartBuild(orgSlug, pipelineSlug, buildNumber).then(() => getBuilds({limit: page, offset: pageSize}));
+      const response = await api.restartBuild(requestUrl).then(() => getBuilds({limit: pageSize, offset: page}));
+      setState(response);
+      return response;
     } catch (e) {
       errorApi.post(e);
       return Promise.reject(e);
     }
   };
 
-  const { loading, value, retry } = useAsyncRetry(
+  const { loading, retry } = useAsyncRetry(
     () =>
       getBuilds({
         limit: pageSize,
@@ -73,7 +76,8 @@ export const useBuilds = ({owner, repo}: {owner: string, repo: string}) => {
       })
       .then(builds => {
         if(page === 0) setTotal(builds?.[0].number);
-        return transform(builds ?? [], restartBuild) as any;
+        const response = transform(builds ?? [], restartBuild) as any
+        setState(response);
       }),
     [page, pageSize, getBuilds],
   );
@@ -85,7 +89,7 @@ export const useBuilds = ({owner, repo}: {owner: string, repo: string}) => {
       page,
       pageSize,
       loading: loading ,
-      builds: value,
+      builds: state as BuildKiteBuildInfo[],
       projectName,
       total,
     },

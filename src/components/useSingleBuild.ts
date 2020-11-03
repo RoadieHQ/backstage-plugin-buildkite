@@ -14,16 +14,15 @@
  * limitations under the License.
  */
 import { errorApiRef, useApi } from '@backstage/core';
-import { useAsync } from 'react-use';
+import { useAsyncFn } from 'react-use';
 import { buildKiteApiRef } from '../api';
 
 export const useSingleBuild = ({owner, repo, buildNumber}: {owner: string, repo: string, buildNumber: number}) => {
-  // const { repo, owner, vcs } = useProjectSlugFromEntity();
   const api = useApi(buildKiteApiRef);
   const errorApi = useApi(errorApiRef);
 
 
-  const { loading, value, error } = useAsync(
+  const [state, fetchBuildData] = useAsyncFn(
     async () => {
       try {
         return await api.getSingleBuild(
@@ -38,5 +37,10 @@ export const useSingleBuild = ({owner, repo, buildNumber}: {owner: string, repo:
     }, [],
   );
 
-  return { loading, value, error };
+  return { 
+    loading: state.loading,
+    value: state.value,
+    error: state.error,
+    fetchBuildData,
+  };
 }

@@ -46,28 +46,28 @@ export class BuildKiteApi {
   }
 
   async getBuilds(page: number, per_page: number) {
-    const url = await this.getApiUrl();
-    const request = await fetch(`${url}/builds?page=${page}&per_page=${per_page}`);
+    const ApiUrl = await this.getApiUrl();
+    const request = await fetch(`${ApiUrl}/builds?page=${page}&per_page=${per_page}`);
     return request.json();
   }
 
-  async restartBuild(orgSlug: string, pipelineSlug: string, buildNumber: number) {
-    const url = await this.getApiUrl();
-    const request = await fetch(`${url}/organizations/${orgSlug}/pipelines/${pipelineSlug}/builds/${buildNumber}/rebuild`, {
+  async restartBuild(requestUrl: string) {
+    const ApiUrl = await this.getApiUrl();
+    const request = await fetch(`${ApiUrl}/${requestUrl}/rebuild`, {
       method: 'PUT',
     });
     return request.json();
   }
 
   async getSingleBuild(orgSlug: string, pipelineSlug: string, buildNumber: number) {
-    const url = await this.getApiUrl();
-    const request = await fetch(`${url}/organizations/${orgSlug}/pipelines/${pipelineSlug}/builds/${buildNumber}`);
+    const ApiUrl = await this.getApiUrl();
+    const request = await fetch(`${ApiUrl}/organizations/${orgSlug}/pipelines/${pipelineSlug}/builds/${buildNumber}`);
     return request.json();
   }
 
-  async getLog(orgSlug: string, pipelineSlug: string, buildNumber: number, buildId: string) {
-    const url = await this.getApiUrl();
-    const request = await fetch(`${url}/organizations/${orgSlug}/pipelines/${pipelineSlug}/builds/${buildNumber}/jobs/${buildId}/log`);
+  async getLog(url: string) {
+    const ApiUrl = await this.getApiUrl();
+    const request = await fetch(`${ApiUrl}/${url}`);
     return request.json();  
   }
 }

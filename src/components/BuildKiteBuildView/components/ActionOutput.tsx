@@ -14,27 +14,28 @@
  * limitations under the License.
  */
 
+import React, { FC, Suspense, useEffect } from 'react';
 import {
   Accordion,
   AccordionDetails,
   AccordionSummary,
   LinearProgress,
   Typography,
+  Box,
 } from '@material-ui/core';
-import { Progress } from '@backstage/core';
 import { makeStyles } from '@material-ui/core/styles';
 import Alert from '@material-ui/lab/Alert';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import moment from 'moment';
-import React, { FC, Suspense } from 'react';
 import { useLog } from '../../useLog';
+import { generateRequestUrl } from '../../utils';
 
 const LazyLog = React.lazy(() => import('react-lazylog/build/LazyLog'));
 moment.relativeTimeThreshold('ss', 0);
 
 const useStyles = makeStyles({
   accordion: {
-    marginTop: '0!important',
+    margin: '0!important',
   },
   accordionDetails: {
     padding: 0,
@@ -52,22 +53,28 @@ export const ActionOutput: FC<{
   className: string;
 }> = ({ url, job, className }) => {
   const classes = useStyles();
-  const splitUrl = url.split('/');
-  const { loading, value, error } = useLog({ owner: splitUrl[5], repo: splitUrl[7], buildNumber: parseInt(splitUrl[9], 10), buildId: splitUrl[11] });
+  const { value, error, fetchLogs } = useLog(generateRequestUrl(url));
 
-  if (loading) {
-    return <Progress />;
-  } else if (error) {
+  useEffect(() => {
+    fetchLogs();
+  }, [job, fetchLogs]);
+
+  if (error) {
     return <Alert severity="error">{error.message}</Alert>;
   }
 
-  const timeElapsed = moment
+  // eslint-disable-next-line no-nested-ternary
+  const timeElapsed = job.finished_at ? (
+    moment
     .duration(
       moment(job.finished_at || moment()).diff(moment(job.started_at)),
     )
-    .humanize();
+    .humanize()
+    ) : (
+      job.started_at ? 'In Progress' : 'Pending'
+    );
 
-  return (
+  return value ? (
     <Accordion TransitionProps={{ unmountOnExit: true }} className={`${classes.accordion} ${className}`}>
       <AccordionSummary
         expandIcon={<ExpandMoreIcon />}
@@ -83,7 +90,11 @@ export const ActionOutput: FC<{
       </AccordionSummary>
       <AccordionDetails className={classes.accordionDetails}>
         {value.size === 0 ? (
-          'Nothing here...'
+          <Box ml={3}>
+            <Typography variant="h3" component="h3">
+              Jobs pending..
+            </Typography>
+          </Box>
         ) : (
           <Suspense fallback={<LinearProgress />}>
             <div style={{ height: '30vh', width: '100%' }}>
@@ -93,5 +104,5 @@ export const ActionOutput: FC<{
         )}
       </AccordionDetails>
     </Accordion>
-  );
+  ) : null;
 };
