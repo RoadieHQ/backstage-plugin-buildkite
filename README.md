@@ -57,7 +57,6 @@ const CICDSwitcher = ({ entity }: { entity: Entity }) => {
 
 ## How to use BuildKite plugin in Backstage
 
-BuildKite plugin is a part of the Backstage sample app. To start using it for your component, you have to:
 
 1. Add annotation to the yaml config file of a component:
 
