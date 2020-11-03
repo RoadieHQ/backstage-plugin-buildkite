@@ -10,8 +10,6 @@
 
 ## How to add BuildKite project dependency to Backstage app
 
-If you have your own backstage application without this plugin, here it's how to add it:
-
 1. If you have standalone app (you didn't clone this repo), then do
 
 ```bash
