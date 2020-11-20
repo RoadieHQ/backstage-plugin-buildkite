@@ -16,9 +16,9 @@
 
 import { createApiRef, DiscoveryApi } from '@backstage/core';
 
-export const buildKiteApiRef = createApiRef<BuildKiteApi>({
+export const buildKiteApiRef = createApiRef<BuildkiteApi>({
   id: 'plugin.buildkite.service',
-  description: 'Used by the BuildKite plugin to make requests',
+  description: 'Used by the Buildkite plugin to make requests',
 });
 
 const DEFAULT_PROXY_PATH = '/buildkite/api';
@@ -31,7 +31,7 @@ type Options = {
   proxyPath?: string;
 };
 
-export class BuildKiteApi {
+export class BuildkiteApi {
   private readonly discoveryApi: DiscoveryApi;
   private readonly proxyPath: string;
 

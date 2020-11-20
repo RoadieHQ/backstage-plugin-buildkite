@@ -17,15 +17,15 @@ import { errorApiRef, useApi } from '@backstage/core';
 import { useCallback, useState } from 'react';
 import { useAsyncRetry } from 'react-use';
 import { buildKiteApiRef } from '../api';
-import { BuildKiteBuildInfo } from './types';
+import { BuildkiteBuildInfo } from './types';
 import { generateRequestUrl } from './utils';
 
 export const transform = (
-  buildsData: BuildKiteBuildInfo[],
+  buildsData: BuildkiteBuildInfo[],
   restartBuild: (requestUrl: string) => Promise<void>,
-): BuildKiteBuildInfo[] => {
+): BuildkiteBuildInfo[] => {
   return buildsData.map(buildData => {
-    const tableBuildInfo: BuildKiteBuildInfo = {
+    const tableBuildInfo: BuildkiteBuildInfo = {
       ...buildData,
       onRestartClick: () => {
         restartBuild(generateRequestUrl(buildData.url));
@@ -89,7 +89,7 @@ export const useBuilds = ({owner, repo}: {owner: string, repo: string}) => {
       page,
       pageSize,
       loading: loading ,
-      builds: state as BuildKiteBuildInfo[],
+      builds: state as BuildkiteBuildInfo[],
       projectName,
       total,
     },
