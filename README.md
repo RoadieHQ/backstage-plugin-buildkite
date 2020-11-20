@@ -1,14 +1,14 @@
-# BuildKite CI/CD Plugin for Backstage
+# Buildkite CI/CD Plugin for Backstage
 
-![a list of builds in the BuildKite plugin for Backstage](./docs/buildkite-plugin.png)
+![a list of builds in the Buildkite plugin for Backstage](./docs/buildkite-plugin.png)
 
 ## Features
 
-- List BuildKite CI/CD Builds
+- List Buildkite CI/CD Builds
 - Retrigger builds
 - Inspect each builds step in real time
 
-## How to add BuildKite project dependency to Backstage app
+## How to add Buildkite project dependency to Backstage app
 
 1. If you have standalone app (you didn't clone this repo), then do
 
@@ -32,7 +32,7 @@ proxy:
 
 ```ts
 // packages/app/src/plugins.ts
-export { plugin as BuildKite } from '@roadiehq/backstage-plugin-buildkite';
+export { plugin as Buildkite } from '@roadiehq/backstage-plugin-buildkite';
 ```
 
 4. Add plugin API to your Backstage instance:
@@ -40,22 +40,22 @@ export { plugin as BuildKite } from '@roadiehq/backstage-plugin-buildkite';
 ```ts
 // packages/app/src/components/catalog/EntityPage.tsx
 import {
-  Router as BuildKiteRouter,
-  isPluginApplicableToEntity as isBuildKiteAvailable,
+  Router as BuildkiteRouter,
+  isPluginApplicableToEntity as isBuildkiteAvailable,
 } from '@roadiehq/backstage-plugin-buildkite';
 
 const CICDSwitcher = ({ entity }: { entity: Entity }) => {
   // This component is just an example of how you can implement your company's logic in entity page.
   // You can for example enforce that all components of type 'service' should use GitHubActions
   switch (true) {
-    case isBuildKiteAvailable(entity):
-      return <BuildKiteRouter entity={entity} />;
+    case isBuildkiteAvailable(entity):
+      return <BuildkiteRouter entity={entity} />;
   ...
   }
 };
 ```
 
-## How to use BuildKite plugin in Backstage
+## How to use Buildkite plugin in Backstage
 
 
 1. Add annotation to the yaml config file of a component:

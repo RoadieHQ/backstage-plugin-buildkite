@@ -1,4 +1,4 @@
-export type BuildKiteBuildInfo = {
+export type BuildkiteBuildInfo = {
   id: string;
   number: number;
   message: string;
@@ -17,14 +17,14 @@ export type BuildKiteBuildInfo = {
   };
   url: string;
   web_url: string;
-  jobs: BuildKiteJob[];
+  jobs: BuildkiteJob[];
   onRestartClick: () => void;
 };
 
 export type TableProps = {
   loading: boolean;
   retry: () => void;
-  builds: BuildKiteBuildInfo[];
+  builds: BuildkiteBuildInfo[];
   projectName: string;
   page: number;
   onChangePage: (page: number) => void;
@@ -33,7 +33,7 @@ export type TableProps = {
   onChangePageSize: (pageSize: number) => void;
 };
 
-export type BuildKiteJob = {
+export type BuildkiteJob = {
   state: string;
   log_url: string;
   id: string;

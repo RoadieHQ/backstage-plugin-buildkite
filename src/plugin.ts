@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import { createPlugin, createApiFactory, discoveryApiRef } from '@backstage/core';
-import { buildKiteApiRef, BuildKiteApi } from './api';
+import { buildKiteApiRef, BuildkiteApi } from './api';
 
 export const plugin = createPlugin({
   id: 'buildkite',
@@ -22,7 +22,7 @@ export const plugin = createPlugin({
     createApiFactory({
       api: buildKiteApiRef,
       deps: { discoveryApi: discoveryApiRef },
-      factory: ({ discoveryApi }) => new BuildKiteApi({ discoveryApi }),
+      factory: ({ discoveryApi }) => new BuildkiteApi({ discoveryApi }),
     }),
   ],
 });

@@ -19,8 +19,8 @@ import { Routes, Route } from 'react-router';
 import { buildKiteRouteRef, buildKiteBuildRouteRef } from './routeRefs';
 import { Entity } from '@backstage/catalog-model';
 import { MissingAnnotationEmptyState } from '@backstage/core';
-import BuildKiteBuildsTable from './BuildKiteBuildsTable';
-import BuildKiteBuildView from './BuildKiteBuildView';
+import BuildkiteBuildsTable from './BuildkiteBuildsTable';
+import BuildkiteBuildView from './BuildkiteBuildView';
 import { BUILDKITE_ANNOTATION } from '../consts';
 
 export const isPluginApplicableToEntity = (entity: Entity) =>
@@ -31,10 +31,10 @@ export const Router = ({ entity }: { entity: Entity }) =>
     <MissingAnnotationEmptyState annotation={BUILDKITE_ANNOTATION} />
   ) : (
     <Routes>
-      <Route path={`/${buildKiteRouteRef.path}`} element={<BuildKiteBuildsTable entity={ entity } />} />
+      <Route path={`/${buildKiteRouteRef.path}`} element={<BuildkiteBuildsTable entity={ entity } />} />
       <Route
         path={`/${buildKiteBuildRouteRef.path}`}
-        element={<BuildKiteBuildView entity={ entity } />}
+        element={<BuildkiteBuildView entity={ entity } />}
       />
     </Routes>
   );

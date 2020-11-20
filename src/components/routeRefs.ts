@@ -18,10 +18,10 @@ import { createRouteRef } from '@backstage/core';
 
 export const buildKiteRouteRef = createRouteRef({
   path: '',
-  title: 'BuildKite | All builds',
+  title: 'Buildkite | All builds',
 });
 
 export const buildKiteBuildRouteRef = createRouteRef({
   path: ':buildNumber',
-  title: 'BuildKite | Build info',
+  title: 'Buildkite | Build info',
 });
