@@ -25,8 +25,8 @@ import moment from 'moment';
 import { buildKiteBuildRouteRef } from '../routeRefs';
 import { useBuilds } from '../useBuilds';
 import { useProjectEntity } from '../useProjectEntity';
-import { BuildKiteStatus } from './components/BuildKiteRunStatus';
-import { BuildKiteBuildInfo, TableProps } from '../types';
+import { BuildkiteStatus } from './components/BuildkiteRunStatus';
+import { BuildkiteBuildInfo, TableProps } from '../types';
 
 const getElapsedTime = (start: string) => {
   return moment(start).fromNow();
@@ -38,7 +38,7 @@ const generatedColumns: TableColumn[] = [
     field: 'number',
     highlight: true,
     width: '5%',
-    render: (row: Partial<BuildKiteBuildInfo>) => {
+    render: (row: Partial<BuildkiteBuildInfo>) => {
       return (
           row.number
       );
@@ -48,7 +48,7 @@ const generatedColumns: TableColumn[] = [
     title: 'Build',
     field: 'message',
     highlight: true,
-    render: (row: Partial<BuildKiteBuildInfo>) => {
+    render: (row: Partial<BuildkiteBuildInfo>) => {
       return (
         <p>
           {row.rebuilt_from?.id &&  'retry of: '}
@@ -67,7 +67,7 @@ const generatedColumns: TableColumn[] = [
   {
     title: 'Source',
     field: 'commit',
-    render: (row: Partial<BuildKiteBuildInfo>) => (
+    render: (row: Partial<BuildkiteBuildInfo>) => (
       <>
         <p>
             {row.branch}
@@ -80,24 +80,24 @@ const generatedColumns: TableColumn[] = [
   {
     title: 'Status',
     field: 'state',
-    render: (row: Partial<BuildKiteBuildInfo>) => {
+    render: (row: Partial<BuildkiteBuildInfo>) => {
       return (
         <Box display="flex" alignItems="center">
-          <BuildKiteStatus status={row.state} />
+          <BuildkiteStatus status={row.state} />
         </Box>
       );
     },
   },
   {
     title: 'Created',
-    render: (row: Partial<BuildKiteBuildInfo>) => {
+    render: (row: Partial<BuildkiteBuildInfo>) => {
       return getElapsedTime(row.created_at as string);
     },
   },
   {
     title: 'Actions',
     sorting: false,
-    render: (row: Partial<BuildKiteBuildInfo>) => (
+    render: (row: Partial<BuildkiteBuildInfo>) => (
       <Tooltip title="Rebuild">
         <IconButton onClick={row.onRestartClick}>
           <SyncIcon />
@@ -146,7 +146,7 @@ export const CITableView: FC<TableProps> = ({
   />
 );
 
-const BuildKiteBuildsTable: FC<{entity: Entity}> = ({ entity }) => {
+const BuildkiteBuildsTable: FC<{entity: Entity}> = ({ entity }) => {
   const { owner, repo } = useProjectEntity(entity);
   const [tableProps, { setPage, retry, setPageSize }] = useBuilds({owner, repo});
 
@@ -160,4 +160,4 @@ const BuildKiteBuildsTable: FC<{entity: Entity}> = ({ entity }) => {
   );
 };
 
-export default BuildKiteBuildsTable;
+export default BuildkiteBuildsTable;

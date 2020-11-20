@@ -92,7 +92,7 @@ export const ActionOutput: FC<{
         {value.size === 0 ? (
           <Box ml={3}>
             <Typography variant="h3" component="h3">
-              Jobs pending..
+              Job pending..
             </Typography>
           </Box>
         ) : (

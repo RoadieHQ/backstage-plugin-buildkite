@@ -35,7 +35,7 @@ import LaunchIcon from '@material-ui/icons/Launch';
 import { ActionOutput } from './components/ActionOutput';
 import { useSingleBuild } from '../useSingleBuild';
 import { useProjectEntity } from '../useProjectEntity';
-import { BuildKiteBuildInfo, BuildKiteJob } from '../types';
+import { BuildkiteBuildInfo, BuildkiteJob } from '../types';
 
 const useStyles = makeStyles(theme => ({
   neutral: {},
@@ -84,7 +84,7 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-const BuildName: FC<{ build: BuildKiteBuildInfo }> = ({ build }) => (
+const BuildName: FC<{ build: BuildkiteBuildInfo }> = ({ build }) => (
   <Box display="flex" alignItems="center">
     #{ build?.number } - { build?.message }
     <IconButton href={ build?.web_url as string } target="_blank" rel="noopener noreferrer">
@@ -95,7 +95,7 @@ const BuildName: FC<{ build: BuildKiteBuildInfo }> = ({ build }) => (
 
 const pickClassName = (
   classes: ReturnType<typeof useStyles>,
-  build: BuildKiteJob,
+  build: BuildkiteJob,
 ) => {
   if (build.state === 'failed') return classes.failed;
   if (['running', 'queued', 'scheduled', 'assigned'].includes(build.state)) return classes.running;
@@ -103,13 +103,13 @@ const pickClassName = (
   return classes.neutral;
 };
 
-const ActionsList: FC<{ jobs: BuildKiteJob[]}> = ({
+const ActionsList: FC<{ jobs: BuildkiteJob[]}> = ({
   jobs,
 }) => {
   const classes = useStyles();
   return (
     <>
-      {jobs.map((job: BuildKiteJob) => (
+      {jobs.map((job: BuildkiteJob) => (
         <ActionOutput
         className={pickClassName(classes, job)}
           job={job}
@@ -121,7 +121,7 @@ const ActionsList: FC<{ jobs: BuildKiteJob[]}> = ({
   );
 };
 
-const BuildsList: FC<{ build: BuildKiteBuildInfo }> = ({ build }) => (
+const BuildsList: FC<{ build: BuildkiteBuildInfo }> = ({ build }) => (
   <Box>
     { build.jobs
       ? <ActionsList key={name} jobs={build.jobs} />
@@ -130,7 +130,7 @@ const BuildsList: FC<{ build: BuildKiteBuildInfo }> = ({ build }) => (
   </Box>
 );
 
-const BuildKiteBuildView: FC<{entity: Entity}> = ({ entity }) => {
+const BuildkiteBuildView: FC<{entity: Entity}> = ({ entity }) => {
   const classes = useStyles(); 
   const { buildNumber } = useParams() as any;
   const { owner, repo } = useProjectEntity(entity);
@@ -178,4 +178,4 @@ const BuildKiteBuildView: FC<{entity: Entity}> = ({ entity }) => {
     </Page>
   ) : null;
 }
-export default BuildKiteBuildView;
+export default BuildkiteBuildView;

@@ -24,7 +24,7 @@ import {
 } from '@backstage/core';
 import React from 'react';
 
-export const BuildKiteStatus = ({
+export const BuildkiteStatus = ({
   status,
 }: {
   status: string | undefined;
