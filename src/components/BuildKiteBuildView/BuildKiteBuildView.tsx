@@ -124,7 +124,7 @@ const ActionsList: FC<{ jobs: BuildkiteJob[]}> = ({
 const BuildsList: FC<{ build: BuildkiteBuildInfo }> = ({ build }) => (
   <Box>
     { build.jobs
-      ? <ActionsList key={name} jobs={build.jobs} />
+      ? <ActionsList jobs={build.jobs} />
       : <Alert severity="error">Jobs list is empty</Alert>
     }
   </Box>
