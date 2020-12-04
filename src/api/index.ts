@@ -45,9 +45,9 @@ export class BuildkiteApi {
     return `${proxyUrl}${this.proxyPath}`;
   }
 
-  async getBuilds(page: number, per_page: number) {
+  async getBuilds(orgSlug: string, pipelineSlug: string, page: number, per_page: number) {
     const ApiUrl = await this.getApiUrl();
-    const request = await fetch(`${ApiUrl}/builds?page=${page}&per_page=${per_page}`);
+    const request = await fetch(`${ApiUrl}/organizations/${orgSlug}/pipelines/${pipelineSlug}/builds?page=${page}&per_page=${per_page}`);
     return request.json();
   }
 
