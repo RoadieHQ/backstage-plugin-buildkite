@@ -46,9 +46,9 @@ export const useBuilds = ({owner, repo}: {owner: string, repo: string}) => {
   const [state, setState] = useState([]);
 
   const getBuilds = useCallback(
-    async ({ limit, offset }: { limit: number; offset: number }) => {
+    async ({ owner, repo, limit, offset }: { owner: string, repo: string, limit: number; offset: number }) => {
       try {
-        return await api.getBuilds(offset + 1, limit);
+        return await api.getBuilds(owner, repo, offset + 1, limit);
       } catch (e) {
         errorApi.post(e);
         return Promise.reject(e);
@@ -59,7 +59,7 @@ export const useBuilds = ({owner, repo}: {owner: string, repo: string}) => {
  
   const restartBuild = async (requestUrl: string) => {
     try {
-      const response = await api.restartBuild(requestUrl).then(() => getBuilds({limit: pageSize, offset: page}));
+      const response = await api.restartBuild(requestUrl).then(() => getBuilds({owner, repo, limit: pageSize, offset: page}));
       setState(response);
       return response;
     } catch (e) {
@@ -71,6 +71,8 @@ export const useBuilds = ({owner, repo}: {owner: string, repo: string}) => {
   const { loading, retry } = useAsyncRetry(
     () =>
       getBuilds({
+        owner,
+        repo,
         limit: pageSize,
         offset: page,
       })
