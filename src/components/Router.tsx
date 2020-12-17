@@ -19,8 +19,8 @@ import { Routes, Route } from 'react-router';
 import { buildKiteRouteRef, buildKiteBuildRouteRef } from './routeRefs';
 import { Entity } from '@backstage/catalog-model';
 import { MissingAnnotationEmptyState } from '@backstage/core';
-import BuildkiteBuildsTable from './BuildkiteBuildsTable';
-import BuildkiteBuildView from './BuildkiteBuildView';
+import BuildkiteBuildsTable from './BuildKiteBuildsTable';
+import BuildkiteBuildView from './BuildKiteBuildView';
 import { BUILDKITE_ANNOTATION } from '../consts';
 
 export const isPluginApplicableToEntity = (entity: Entity) =>
