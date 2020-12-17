@@ -25,7 +25,7 @@ import moment from 'moment';
 import { buildKiteBuildRouteRef } from '../routeRefs';
 import { useBuilds } from '../useBuilds';
 import { useProjectEntity } from '../useProjectEntity';
-import { BuildkiteStatus } from './components/BuildkiteRunStatus';
+import { BuildkiteStatus } from './components/BuildKiteRunStatus';
 import { BuildkiteBuildInfo, TableProps } from '../types';
 
 const getElapsedTime = (start: string) => {
