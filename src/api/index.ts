@@ -45,9 +45,16 @@ export class BuildkiteApi {
     return `${proxyUrl}${this.proxyPath}`;
   }
 
-  async getBuilds(orgSlug: string, pipelineSlug: string, page: number, per_page: number) {
+  async getBuilds(
+    orgSlug: string,
+    pipelineSlug: string,
+    page: number,
+    per_page: number,
+  ) {
     const ApiUrl = await this.getApiUrl();
-    const request = await fetch(`${ApiUrl}/organizations/${orgSlug}/pipelines/${pipelineSlug}/builds?page=${page}&per_page=${per_page}`);
+    const request = await fetch(
+      `${ApiUrl}/organizations/${orgSlug}/pipelines/${pipelineSlug}/builds?page=${page}&per_page=${per_page}`,
+    );
     return request.json();
   }
 
@@ -59,15 +66,21 @@ export class BuildkiteApi {
     return request.json();
   }
 
-  async getSingleBuild(orgSlug: string, pipelineSlug: string, buildNumber: number) {
+  async getSingleBuild(
+    orgSlug: string,
+    pipelineSlug: string,
+    buildNumber: number,
+  ) {
     const ApiUrl = await this.getApiUrl();
-    const request = await fetch(`${ApiUrl}/organizations/${orgSlug}/pipelines/${pipelineSlug}/builds/${buildNumber}`);
+    const request = await fetch(
+      `${ApiUrl}/organizations/${orgSlug}/pipelines/${pipelineSlug}/builds/${buildNumber}`,
+    );
     return request.json();
   }
 
   async getLog(url: string) {
     const ApiUrl = await this.getApiUrl();
     const request = await fetch(`${ApiUrl}/${url}`);
-    return request.json();  
+    return request.json();
   }
 }
