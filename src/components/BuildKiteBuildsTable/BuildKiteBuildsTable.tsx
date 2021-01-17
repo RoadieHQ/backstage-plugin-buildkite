@@ -39,9 +39,7 @@ const generatedColumns: TableColumn[] = [
     highlight: true,
     width: '5%',
     render: (row: Partial<BuildkiteBuildInfo>) => {
-      return (
-          row.number
-      );
+      return row.number;
     },
   },
   {
@@ -51,15 +49,15 @@ const generatedColumns: TableColumn[] = [
     render: (row: Partial<BuildkiteBuildInfo>) => {
       return (
         <p>
-          {row.rebuilt_from?.id &&  'retry of: '}
+          {row.rebuilt_from?.id && 'retry of: '}
           <Link
             component={RouterLink}
             to={generatePath(buildKiteBuildRouteRef.path, {
               buildNumber: (row.number as number).toString(),
             })}
           >
-          {row.message}
-        </Link>
+            {row.message}
+          </Link>
         </p>
       );
     },
@@ -69,9 +67,7 @@ const generatedColumns: TableColumn[] = [
     field: 'commit',
     render: (row: Partial<BuildkiteBuildInfo>) => (
       <>
-        <p>
-            {row.branch}
-        </p>
+        <p>{row.branch}</p>
         <p>{row.commit}</p>
       </>
     ),
@@ -118,7 +114,7 @@ export const CITableView: FC<TableProps> = ({
   onChangePage,
   onChangePageSize,
   total,
-}) =>  (
+}) => (
   <Table
     isLoading={loading}
     options={{ paging: true, pageSize, padding: 'dense' }}
@@ -146,16 +142,19 @@ export const CITableView: FC<TableProps> = ({
   />
 );
 
-const BuildkiteBuildsTable: FC<{entity: Entity}> = ({ entity }) => {
+const BuildkiteBuildsTable: FC<{ entity: Entity }> = ({ entity }) => {
   const { owner, repo } = useProjectEntity(entity);
-  const [tableProps, { setPage, retry, setPageSize }] = useBuilds({owner, repo});
+  const [tableProps, { setPage, retry, setPageSize }] = useBuilds({
+    owner,
+    repo,
+  });
 
   return (
     <CITableView
       {...tableProps}
-      retry={ retry }
-      onChangePageSize={ setPageSize }
-      onChangePage={ setPage }
+      retry={retry}
+      onChangePageSize={setPageSize}
+      onChangePage={setPage}
     />
   );
 };

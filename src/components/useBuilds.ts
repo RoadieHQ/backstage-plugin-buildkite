@@ -29,13 +29,13 @@ export const transform = (
       ...buildData,
       onRestartClick: () => {
         restartBuild(generateRequestUrl(buildData.url));
-      }
+      },
     };
     return tableBuildInfo;
   });
 };
 
-export const useBuilds = ({owner, repo}: {owner: string, repo: string}) => {
+export const useBuilds = ({ owner, repo }: { owner: string; repo: string }) => {
   // const { repo, owner, vcs } = useProjectSlugFromEntity();
   const api = useApi(buildKiteApiRef);
   const errorApi = useApi(errorApiRef);
@@ -43,46 +43,29 @@ export const useBuilds = ({owner, repo}: {owner: string, repo: string}) => {
   const [total, setTotal] = useState(0);
   const [page, setPage] = useState(0);
   const [pageSize, setPageSize] = useState(5);
-  const [state, setState] = useState([]);
 
-  const getBuilds = useCallback(
-    async ({ owner, repo, limit, offset }: { owner: string, repo: string, limit: number; offset: number }) => {
-      try {
-        return await api.getBuilds(owner, repo, offset + 1, limit);
-      } catch (e) {
-        errorApi.post(e);
-        return Promise.reject(e);
-      }
-    },
-    [api, errorApi],
-  );
- 
+  const { value, loading, retry } = useAsyncRetry(async () => {
+    let builds = [];
+    try {
+      builds = await api.getBuilds(owner, repo, page + 1, pageSize);
+    } catch (e) {
+      errorApi.post(e);
+    }
+    if (page === 0) setTotal(builds?.[0].number);
+    const response = transform(builds ?? [], restartBuild) as any;
+    return response;
+  }, [page, pageSize]);
+
   const restartBuild = async (requestUrl: string) => {
     try {
-      const response = await api.restartBuild(requestUrl).then(() => getBuilds({owner, repo, limit: pageSize, offset: page}));
-      setState(response);
-      return response;
+      await api.restartBuild(requestUrl);
+      retry();
+      return;
     } catch (e) {
       errorApi.post(e);
       return Promise.reject(e);
     }
   };
-
-  const { loading, retry } = useAsyncRetry(
-    () =>
-      getBuilds({
-        owner,
-        repo,
-        limit: pageSize,
-        offset: page,
-      })
-      .then(builds => {
-        if(page === 0) setTotal(builds?.[0].number);
-        const response = transform(builds ?? [], restartBuild) as any
-        setState(response);
-      }),
-    [page, pageSize, getBuilds],
-  );
 
   const projectName = `${owner}/${repo}`;
 
@@ -90,17 +73,16 @@ export const useBuilds = ({owner, repo}: {owner: string, repo: string}) => {
     {
       page,
       pageSize,
-      loading: loading ,
-      builds: state as BuildkiteBuildInfo[],
+      loading: loading,
+      builds: value as BuildkiteBuildInfo[],
       projectName,
       total,
     },
     {
-      getBuilds,
       setPage,
       setPageSize,
       restartBuild,
       retry,
     },
   ] as const;
-}
+};
