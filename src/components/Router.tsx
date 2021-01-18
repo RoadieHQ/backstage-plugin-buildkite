@@ -31,10 +31,13 @@ export const Router = ({ entity }: { entity: Entity }) =>
     <MissingAnnotationEmptyState annotation={BUILDKITE_ANNOTATION} />
   ) : (
     <Routes>
-      <Route path={`/${buildKiteRouteRef.path}`} element={<BuildkiteBuildsTable entity={ entity } />} />
+      <Route
+        path={`/${buildKiteRouteRef.path}`}
+        element={<BuildkiteBuildsTable entity={entity} />}
+      />
       <Route
         path={`/${buildKiteBuildRouteRef.path}`}
-        element={<BuildkiteBuildView entity={ entity } />}
+        element={<BuildkiteBuildView entity={entity} />}
       />
     </Routes>
   );

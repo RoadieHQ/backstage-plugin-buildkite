@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import { errorApiRef, useApi } from '@backstage/core';
-import { useCallback, useState } from 'react';
+import { useState } from 'react';
 import { useAsyncRetry } from 'react-use';
 import { buildKiteApiRef } from '../api';
 import { BuildkiteBuildInfo } from './types';
@@ -36,7 +36,6 @@ export const transform = (
 };
 
 export const useBuilds = ({ owner, repo }: { owner: string; repo: string }) => {
-  // const { repo, owner, vcs } = useProjectSlugFromEntity();
   const api = useApi(buildKiteApiRef);
   const errorApi = useApi(errorApiRef);
 
@@ -63,7 +62,7 @@ export const useBuilds = ({ owner, repo }: { owner: string; repo: string }) => {
       return;
     } catch (e) {
       errorApi.post(e);
-      return Promise.reject(e);
+      throw e;
     }
   };
 

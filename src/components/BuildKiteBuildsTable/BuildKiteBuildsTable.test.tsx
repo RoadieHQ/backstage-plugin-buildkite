@@ -15,11 +15,7 @@
  */
 
 import React from 'react';
-import {
-  render,
-  waitFor,
-  waitForElementToBeRemoved,
-} from '@testing-library/react';
+import { render } from '@testing-library/react';
 import {
   ApiRegistry,
   ApiProvider,
