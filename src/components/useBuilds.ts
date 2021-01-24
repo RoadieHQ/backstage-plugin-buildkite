@@ -22,9 +22,9 @@ import { generateRequestUrl } from './utils';
 
 export const transform = (
   buildsData: BuildkiteBuildInfo[],
-  restartBuild: (requestUrl: string) => Promise<void>,
+  restartBuild: (requestUrl: string) => Promise<void>
 ): BuildkiteBuildInfo[] => {
-  return buildsData.map(buildData => {
+  return buildsData.map((buildData) => {
     const tableBuildInfo: BuildkiteBuildInfo = {
       ...buildData,
       onRestartClick: () => {
@@ -51,6 +51,7 @@ export const useBuilds = ({ owner, repo }: { owner: string; repo: string }) => {
       errorApi.post(e);
     }
     if (page === 0) setTotal(builds?.[0].number);
+    // eslint-disable-next-line
     const response = transform(builds ?? [], restartBuild) as any;
     return response;
   }, [page, pageSize]);
