@@ -943,12 +943,12 @@
     "@backstage/config" "^0.1.2"
     cross-fetch "^3.0.6"
 
-"@backstage/catalog-model@^0.4.0":
-  version "0.4.0"
-  resolved "https://registry.yarnpkg.com/@backstage/catalog-model/-/catalog-model-0.4.0.tgz#197c33eabaad4752c1ce947c71e6a6d6cfe8b54d"
-  integrity sha512-M/OcXsOKs0Xfo6jq9EGbhhFW2Mq9DFMTxcEPAQlHkI7yOKl+AsWXVY550L25yfaIYgGXsJwy9XKUTtdaT1TmTQ==
+"@backstage/catalog-model@^0.6.0":
+  version "0.6.0"
+  resolved "https://registry.yarnpkg.com/@backstage/catalog-model/-/catalog-model-0.6.0.tgz#167b604061e8f03fc3aa76fa6d962b4ba28f27a2"
+  integrity sha512-VTcghDw2uJ451rnOf7+QLoWwkZVq9v/7fzfDgg01ItEz/AfA67zqRcXwygdk2kI0wnhciMwb912ZueGQNbOXPQ==
   dependencies:
-    "@backstage/config" "^0.1.1"
+    "@backstage/config" "^0.1.2"
     "@types/json-schema" "^7.0.5"
     "@types/yup" "^0.29.8"
     json-schema "^0.2.5"
