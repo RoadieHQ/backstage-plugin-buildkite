@@ -26,7 +26,7 @@ import { buildKiteBuildRouteRef } from '../routeRefs';
 import { useBuilds } from '../useBuilds';
 import { useProjectEntity } from '../useProjectEntity';
 import { BuildkiteStatus } from './components/BuildKiteRunStatus';
-import { BuildkiteBuildInfo, TableProps } from '../types';
+import { TableBuildkiteBuildInfo, TableProps } from '../types';
 
 const getElapsedTime = (start: string) => {
   return moment(start).fromNow();
@@ -38,7 +38,7 @@ const generatedColumns: TableColumn[] = [
     field: 'number',
     highlight: true,
     width: '5%',
-    render: (row: Partial<BuildkiteBuildInfo>) => {
+    render: (row: Partial<TableBuildkiteBuildInfo>) => {
       return row.number;
     },
   },
@@ -46,7 +46,7 @@ const generatedColumns: TableColumn[] = [
     title: 'Build',
     field: 'message',
     highlight: true,
-    render: (row: Partial<BuildkiteBuildInfo>) => {
+    render: (row: Partial<TableBuildkiteBuildInfo>) => {
       return (
         <p>
           {row.rebuilt_from?.id && 'retry of: '}
@@ -65,7 +65,7 @@ const generatedColumns: TableColumn[] = [
   {
     title: 'Source',
     field: 'commit',
-    render: (row: Partial<BuildkiteBuildInfo>) => (
+    render: (row: Partial<TableBuildkiteBuildInfo>) => (
       <>
         <p>{row.branch}</p>
         <p>{row.commit}</p>
@@ -76,7 +76,7 @@ const generatedColumns: TableColumn[] = [
   {
     title: 'Status',
     field: 'state',
-    render: (row: Partial<BuildkiteBuildInfo>) => {
+    render: (row: Partial<TableBuildkiteBuildInfo>) => {
       return (
         <Box display="flex" alignItems="center">
           <BuildkiteStatus status={row.state} />
@@ -86,14 +86,14 @@ const generatedColumns: TableColumn[] = [
   },
   {
     title: 'Created',
-    render: (row: Partial<BuildkiteBuildInfo>) => {
+    render: (row: Partial<TableBuildkiteBuildInfo>) => {
       return getElapsedTime(row.created_at as string);
     },
   },
   {
     title: 'Actions',
     sorting: false,
-    render: (row: Partial<BuildkiteBuildInfo>) => (
+    render: (row: Partial<TableBuildkiteBuildInfo>) => (
       <Tooltip title="Rebuild">
         <IconButton onClick={row.onRestartClick}>
           <SyncIcon />

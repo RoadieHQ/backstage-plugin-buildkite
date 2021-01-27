@@ -15,6 +15,9 @@
  */
 
 import { createApiRef, DiscoveryApi } from '@backstage/core';
+import * as tPromise from 'io-ts-promise';
+import reporter from 'io-ts-reporters';
+import { buildkiteBuildInfoList } from '../components/types';
 
 export const buildKiteApiRef = createApiRef<BuildkiteApi>({
   id: 'plugin.buildkite.service',
@@ -59,6 +62,20 @@ export class BuildkiteApi {
       throw new Error(
         `failed to fetch data, status ${request.status}: ${request.statusText}`
       );
+    }
+    const json = await request.json();
+    try {
+      return await tPromise.decode(buildkiteBuildInfoList, json);
+    } catch (e) {
+      if (tPromise.isDecodeError(e)) {
+        throw new Error(
+          `remote data validation failed: ${reporter
+            .report(buildkiteBuildInfoList.decode(json))
+            .join('; ')}`
+        );
+      } else {
+        throw e;
+      }
     }
   }
 

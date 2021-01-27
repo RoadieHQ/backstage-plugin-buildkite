@@ -26,7 +26,11 @@ import { rest } from 'msw';
 import { msw } from '@backstage/test-utils';
 import { setupServer } from 'msw/node';
 import { MemoryRouter } from 'react-router-dom';
-import { buildsResponseMock, entityMock } from '../../mocks/mocks';
+import {
+  buildsResponseMock,
+  buildsResponseMockMissingData,
+  entityMock,
+} from '../../mocks/mocks';
 import { buildKiteApiRef } from '../..';
 import { BuildkiteApi } from '../../api';
 import { ThemeProvider } from '@material-ui/core';
@@ -96,6 +100,32 @@ describe('BuildKiteBuildsTable', () => {
     await waitFor(() =>
       expect(postMock).toBeCalledWith(
         new Error('failed to fetch data, status 403: Forbidden')
+      )
+    );
+  });
+
+  it('should display an error on data validation failure failure', async () => {
+    worker.use(
+      rest.get(
+        ' http://exampleapi.com/buildkite/api/organizations/rbnetwork/pipelines/example-pipeline/builds?page=1&per_page=5',
+        (_, res, ctx) => res(ctx.json(buildsResponseMockMissingData))
+      )
+    );
+    render(
+      <MemoryRouter>
+        <ThemeProvider theme={lightTheme}>
+          <ApiProvider apis={apis}>
+            <BuildkiteBuildsTable entity={entityMock} />
+          </ApiProvider>
+        </ThemeProvider>
+      </MemoryRouter>
+    );
+
+    await waitFor(() =>
+      expect(postMock).toBeCalledWith(
+        new Error(
+          'remote data validation failed: Expecting string at 0.id but instead got: undefined'
+        )
       )
     );
   });

@@ -17,23 +17,23 @@ import { errorApiRef, useApi } from '@backstage/core';
 import { useState } from 'react';
 import { useAsyncRetry } from 'react-use';
 import { buildKiteApiRef } from '../api';
-import { BuildkiteBuildInfo } from './types';
+import {
+  BuildkiteBuildInfo,
+  BuildkiteBuildInfoList,
+  TableBuildkiteBuildInfo,
+} from './types';
 import { generateRequestUrl } from './utils';
 
 export const transform = (
   buildsData: BuildkiteBuildInfo[],
   restartBuild: (requestUrl: string) => Promise<void>
-): BuildkiteBuildInfo[] => {
-  return buildsData.map((buildData) => {
-    const tableBuildInfo: BuildkiteBuildInfo = {
-      ...buildData,
-      onRestartClick: () => {
-        restartBuild(generateRequestUrl(buildData.url));
-      },
-    };
-    return tableBuildInfo;
-  });
-};
+): TableBuildkiteBuildInfo[] =>
+  buildsData.map((buildData) => ({
+    ...buildData,
+    onRestartClick: () => {
+      restartBuild(generateRequestUrl(buildData.url));
+    },
+  }));
 
 export const useBuilds = ({ owner, repo }: { owner: string; repo: string }) => {
   const api = useApi(buildKiteApiRef);
@@ -44,7 +44,7 @@ export const useBuilds = ({ owner, repo }: { owner: string; repo: string }) => {
   const [pageSize, setPageSize] = useState(5);
 
   const { value, loading, retry } = useAsyncRetry(async () => {
-    let builds = [];
+    let builds: BuildkiteBuildInfoList = [];
     try {
       builds = await api.getBuilds(owner, repo, page + 1, pageSize);
     } catch (e) {
