@@ -49,12 +49,17 @@ export class BuildkiteApi {
     orgSlug: string,
     pipelineSlug: string,
     page: number,
-    per_page: number,
+    per_page: number
   ) {
     const ApiUrl = await this.getApiUrl();
     const request = await fetch(
-      `${ApiUrl}/organizations/${orgSlug}/pipelines/${pipelineSlug}/builds?page=${page}&per_page=${per_page}`,
+      `${ApiUrl}/organizations/${orgSlug}/pipelines/${pipelineSlug}/builds?page=${page}&per_page=${per_page}`
     );
+    if (!request.ok) {
+      throw new Error(
+        `failed to fetch data, status ${request.status}: ${request.statusText}`
+      );
+    }
     return request.json();
   }
 
@@ -63,24 +68,39 @@ export class BuildkiteApi {
     const request = await fetch(`${ApiUrl}/${requestUrl}/rebuild`, {
       method: 'PUT',
     });
+    if (!request.ok) {
+      throw new Error(
+        `failed to fetch data, status ${request.status}: ${request.statusText}`
+      );
+    }
     return request.json();
   }
 
   async getSingleBuild(
     orgSlug: string,
     pipelineSlug: string,
-    buildNumber: number,
+    buildNumber: number
   ) {
     const ApiUrl = await this.getApiUrl();
     const request = await fetch(
-      `${ApiUrl}/organizations/${orgSlug}/pipelines/${pipelineSlug}/builds/${buildNumber}`,
+      `${ApiUrl}/organizations/${orgSlug}/pipelines/${pipelineSlug}/builds/${buildNumber}`
     );
+    if (!request.ok) {
+      throw new Error(
+        `failed to fetch data, status ${request.status}: ${request.statusText}`
+      );
+    }
     return request.json();
   }
 
   async getLog(url: string) {
     const ApiUrl = await this.getApiUrl();
     const request = await fetch(`${ApiUrl}/${url}`);
+    if (!request.ok) {
+      throw new Error(
+        `failed to fetch data, status ${request.status}: ${request.statusText}`
+      );
+    }
     return request.json();
   }
 }
