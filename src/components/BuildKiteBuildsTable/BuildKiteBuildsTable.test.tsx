@@ -15,7 +15,7 @@
  */
 
 import React from 'react';
-import { render } from '@testing-library/react';
+import { render, waitFor } from '@testing-library/react';
 import {
   ApiRegistry,
   ApiProvider,
@@ -33,7 +33,9 @@ import { ThemeProvider } from '@material-ui/core';
 import { lightTheme } from '@backstage/theme';
 import BuildkiteBuildsTable from './BuildKiteBuildsTable';
 
-const errorApiMock = { post: jest.fn(), error$: jest.fn() };
+const postMock = jest.fn();
+
+const errorApiMock = { post: postMock, error$: jest.fn() };
 const discoveryApi = UrlPatternDiscovery.compile('http://exampleapi.com');
 
 const apis = ApiRegistry.from([
@@ -45,16 +47,15 @@ describe('BuildKiteBuildsTable', () => {
   const worker = setupServer();
   msw.setupDefaultHandlers(worker);
 
-  beforeEach(() => {
+  beforeEach(() => jest.resetAllMocks());
+
+  it('should display a table with the data from the requests', async () => {
     worker.use(
       rest.get(
         ' http://exampleapi.com/buildkite/api/organizations/rbnetwork/pipelines/example-pipeline/builds?page=1&per_page=5',
-        (_, res, ctx) => res(ctx.json(buildsResponseMock)),
-      ),
+        (_, res, ctx) => res(ctx.json(buildsResponseMock))
+      )
     );
-  });
-
-  it('should display a table with the data from the requests', async () => {
     const rendered = render(
       <MemoryRouter>
         <ThemeProvider theme={lightTheme}>
@@ -62,16 +63,40 @@ describe('BuildKiteBuildsTable', () => {
             <BuildkiteBuildsTable entity={entityMock} />
           </ApiProvider>
         </ThemeProvider>
-      </MemoryRouter>,
+      </MemoryRouter>
     );
 
     expect(
-      await rendered.findByText('rbnetwork/example-pipeline'),
+      await rendered.findByText('rbnetwork/example-pipeline')
     ).toBeInTheDocument();
     expect(
-      await rendered.findByText('Update catalog-info.yaml'),
+      await rendered.findByText('Update catalog-info.yaml')
     ).toBeInTheDocument();
     expect((await rendered.findAllByText('Queued')).length).toEqual(5);
     expect((await rendered.findAllByText('main')).length).toEqual(5);
+  });
+
+  it('should display an error on fetch failure', async () => {
+    worker.use(
+      rest.get(
+        ' http://exampleapi.com/buildkite/api/organizations/rbnetwork/pipelines/example-pipeline/builds?page=1&per_page=5',
+        (_, res, ctx) => res(ctx.status(403))
+      )
+    );
+    render(
+      <MemoryRouter>
+        <ThemeProvider theme={lightTheme}>
+          <ApiProvider apis={apis}>
+            <BuildkiteBuildsTable entity={entityMock} />
+          </ApiProvider>
+        </ThemeProvider>
+      </MemoryRouter>
+    );
+
+    await waitFor(() =>
+      expect(postMock).toBeCalledWith(
+        new Error('failed to fetch data, status 403: Forbidden')
+      )
+    );
   });
 });
