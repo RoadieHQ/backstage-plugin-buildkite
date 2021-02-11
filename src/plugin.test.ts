@@ -13,10 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { plugin } from './plugin';
+import { buildkitePlugin } from './plugin';
 
 describe('backstage-plugin-buildkite', () => {
   it('should export plugin', () => {
-    expect(plugin).toBeDefined();
+    expect(buildkitePlugin).toBeDefined();
   });
 });
