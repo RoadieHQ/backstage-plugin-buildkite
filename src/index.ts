@@ -14,5 +14,15 @@
  * limitations under the License.
  */
 export * from './plugin';
-export * from './components/Router';
+export {
+  /**
+   * @deprecated since 0.2.0 composability API should be used
+   */
+  Router,
+  isBuildkiteAvailable,
+  /**
+   * @deprecated since 0.2.0 composability API should be used
+   */
+  isBuildkiteAvailable as isPluginApplicableToEntity,
+} from './components/Router';
 export * from './api';
