@@ -21,7 +21,7 @@ import { MissingAnnotationEmptyState } from '@backstage/core';
 import BuildkiteBuildsTable from './BuildKiteBuildsTable';
 import BuildkiteBuildView from './BuildKiteBuildView';
 import { BUILDKITE_ANNOTATION } from '../consts';
-import { buildViewRouteRef } from '..';
+import { buildViewRouteRef } from '../plugin';
 
 export const isBuildkiteAvailable = (entity: Entity) =>
   Boolean(entity.metadata.annotations?.[BUILDKITE_ANNOTATION]);

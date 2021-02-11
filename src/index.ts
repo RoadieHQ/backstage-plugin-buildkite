@@ -13,7 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-export * from './plugin';
+export {
+  /**
+   * @deprecated since 0.2.0 new name 'buildkitePlugin' should be used
+   */
+  buildkitePlugin as plugin,
+  buildkitePlugin,
+} from './plugin';
 export {
   /**
    * @deprecated since 0.2.0 composability API should be used
