@@ -13,10 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { createPlugin, createApiFactory, discoveryApiRef } from '@backstage/core';
+import {
+  createPlugin,
+  createApiFactory,
+  discoveryApiRef,
+  createRouteRef,
+  createRoutableExtension,
+} from '@backstage/core';
 import { buildKiteApiRef, BuildkiteApi } from './api';
 
-export const plugin = createPlugin({
+export const entityContentRouteRef = createRouteRef({
+  title: 'Buildkite Entity Content',
+});
+
+export const buildViewRouteRef = createRouteRef({
+  title: 'Buildkite Build view',
+  path: ':buildNumber',
+});
+
+export const buildkitePlugin = createPlugin({
   id: 'buildkite',
   apis: [
     createApiFactory({
@@ -25,4 +40,15 @@ export const plugin = createPlugin({
       factory: ({ discoveryApi }) => new BuildkiteApi({ discoveryApi }),
     }),
   ],
+  routes: {
+    entityContent: entityContentRouteRef,
+    buildView: buildViewRouteRef,
+  },
 });
+
+export const EntityBuildkiteContent = buildkitePlugin.provide(
+  createRoutableExtension({
+    component: () => import('./components/Router').then((m) => m.Router),
+    mountPoint: entityContentRouteRef,
+  })
+);
