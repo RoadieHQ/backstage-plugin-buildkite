@@ -5,6 +5,13 @@ metadata:
   name: backstage-plugin-buildkite
   annotations:
     github.com/project-slug: RoadieHQ/backstage-plugin-buildkite
+  tags:
+    - plugin
+    - oss
+  links:
+    - url: https://www.npmjs.com/package/@roadiehq/backstage-plugin-buildkite
+      title: NPM
 spec:
-  type: other
-  lifecycle: unknown
+  type: library
+  owner: group:engineering
+  lifecycle: production
