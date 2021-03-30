@@ -19,6 +19,7 @@ export {
    */
   buildkitePlugin as plugin,
   buildkitePlugin,
+  EntityBuildkiteContent,
 } from './plugin';
 export {
   /**
