@@ -24,7 +24,7 @@ import { BUILDKITE_ANNOTATION } from '../consts';
 import { buildViewRouteRef } from '../plugin';
 
 export const isBuildkiteAvailable = (entity: Entity) =>
-  Boolean(entity.metadata.annotations?.[BUILDKITE_ANNOTATION]);
+  Boolean(entity?.metadata.annotations?.[BUILDKITE_ANNOTATION]);
 
 export const Router = ({ entity }: { entity: Entity }) =>
   !isBuildkiteAvailable(entity) ? (
