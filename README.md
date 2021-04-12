@@ -40,7 +40,7 @@ export { plugin as Buildkite } from '@roadiehq/backstage-plugin-buildkite';
 ```ts
 // packages/app/src/components/catalog/EntityPage.tsx
 import {
-  Router as BuildkiteRouter,
+  EntityBuildkiteContent,
   isPluginApplicableToEntity as isBuildkiteAvailable,
 } from '@roadiehq/backstage-plugin-buildkite';
 
@@ -66,7 +66,7 @@ metadata:
     buildkite.com/project-slug: [exampleorganization/exampleproject]
 ```
 
-2. Get and provide `BUILDKITE_TOKEN` as env variable.
+2. Get and provide `BUILDKITE_TOKEN` as env variable. Note that the token needs to be in format `Bearer TOKEN`.
 
 
 ## Links
