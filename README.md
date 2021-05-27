@@ -28,14 +28,7 @@ proxy:
         $env: BUILDKITE_TOKEN
 ```
 
-3. Add plugin to the list of plugins:
-
-```ts
-// packages/app/src/plugins.ts
-export { plugin as Buildkite } from '@roadiehq/backstage-plugin-buildkite';
-```
-
-4. Add plugin API to your Backstage instance:
+3. Import it into your Backstage application:
 
 ```ts
 // packages/app/src/components/catalog/EntityPage.tsx
@@ -43,16 +36,21 @@ import {
   EntityBuildkiteContent,
   isPluginApplicableToEntity as isBuildkiteAvailable,
 } from '@roadiehq/backstage-plugin-buildkite';
+```
 
-const CICDSwitcher = ({ entity }: { entity: Entity }) => {
-  // This component is just an example of how you can implement your company's logic in entity page.
-  // You can for example enforce that all components of type 'service' should use GitHubActions
-  switch (true) {
-    case isBuildkiteAvailable(entity):
-      return <BuildkiteRouter entity={entity} />;
-  ...
-  }
-};
+4. Add plugin API to your Backstage instance:
+
+```ts
+// packages/app/src/components/catalog/EntityPage.tsx
+
+export const cicdContent = (
+  <EntitySwitch>
+    <EntitySwitch.Case if={isBuildkiteAvailable}>
+      <EntityBuildkiteContent />
+    </EntitySwitch.Case>
+    ...
+  </EntitySwitch>
+);
 ```
 
 ## How to use Buildkite plugin in Backstage
@@ -66,7 +64,7 @@ metadata:
     buildkite.com/project-slug: [exampleorganization/exampleproject]
 ```
 
-2. Get and provide `BUILDKITE_TOKEN` as env variable. Note that the token needs to be in format `Bearer TOKEN`.
+2. Get and provide `BUILDKITE_TOKEN` as env variable. Note that the token needs to be in format `Bearer TOKEN`
 
 
 ## Links
