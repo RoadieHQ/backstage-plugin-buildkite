@@ -17,7 +17,7 @@
 import React from 'react';
 import { Routes, Route } from 'react-router';
 import { Entity } from '@backstage/catalog-model';
-import { MissingAnnotationEmptyState } from '@backstage/core';
+import { MissingAnnotationEmptyState } from '@backstage/core-components';
 import BuildkiteBuildsTable from './BuildKiteBuildsTable';
 import BuildkiteBuildView from './BuildKiteBuildView';
 import { BUILDKITE_ANNOTATION } from '../consts';

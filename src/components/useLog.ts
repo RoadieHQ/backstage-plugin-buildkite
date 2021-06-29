@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import { useCallback } from 'react';
-import { errorApiRef, useApi } from '@backstage/core';
+import { errorApiRef, useApi } from '@backstage/core-plugin-api';
 import { useAsyncFn } from 'react-use';
 import { buildKiteApiRef } from '../api';
 

@@ -27,7 +27,7 @@ import {
   Page,
   Content,
   Link as MaterialLink,
-} from '@backstage/core';
+} from '@backstage/core-components';
 import { useParams } from 'react-router-dom';
 import Alert from '@material-ui/lab/Alert';
 import { Entity } from '@backstage/catalog-model';
