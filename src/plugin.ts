@@ -19,7 +19,7 @@ import {
   discoveryApiRef,
   createRouteRef,
   createRoutableExtension,
-} from '@backstage/core';
+} from '@backstage/core-plugin-api';
 import { buildKiteApiRef, BuildkiteApi } from './api';
 
 export const entityContentRouteRef = createRouteRef({

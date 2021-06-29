@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { createApiRef, DiscoveryApi } from '@backstage/core';
+import { createApiRef, DiscoveryApi } from '@backstage/core-plugin-api';
 
 export const buildKiteApiRef = createApiRef<BuildkiteApi>({
   id: 'plugin.buildkite.service',

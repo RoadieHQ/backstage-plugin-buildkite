@@ -16,7 +16,7 @@
 import React, { FC } from 'react';
 import { generatePath, Link as RouterLink } from 'react-router-dom';
 import { Box, IconButton, Link, Typography, Tooltip } from '@material-ui/core';
-import { Table, TableColumn } from '@backstage/core';
+import { Table, TableColumn } from '@backstage/core-components';
 import RetryIcon from '@material-ui/icons/Replay';
 import SyncIcon from '@material-ui/icons/Sync';
 import GitHubIcon from '@material-ui/icons/GitHub';
