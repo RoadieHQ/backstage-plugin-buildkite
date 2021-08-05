@@ -25,14 +25,11 @@ import {
   UrlPatternDiscovery,
 } from '@backstage/core-app-api';
 import { rest } from 'msw';
-import { msw } from '@backstage/test-utils';
+import {msw, wrapInTestApp} from '@backstage/test-utils';
 import { setupServer } from 'msw/node';
-import { MemoryRouter } from 'react-router-dom';
 import { buildsResponseMock, entityMock } from '../../mocks/mocks';
 import { buildKiteApiRef } from '../..';
 import { BuildkiteApi } from '../../api';
-import { ThemeProvider } from '@material-ui/core';
-import { lightTheme } from '@backstage/theme';
 import BuildkiteBuildsTable from './BuildKiteBuildsTable';
 
 const postMock = jest.fn();
@@ -59,13 +56,11 @@ describe('BuildKiteBuildsTable', () => {
       )
     );
     const rendered = render(
-      <MemoryRouter>
-        <ThemeProvider theme={lightTheme}>
-          <ApiProvider apis={apis}>
-            <BuildkiteBuildsTable entity={entityMock} />
-          </ApiProvider>
-        </ThemeProvider>
-      </MemoryRouter>
+      wrapInTestApp(
+        <ApiProvider apis={apis}>
+          <BuildkiteBuildsTable entity={entityMock} />
+        </ApiProvider>
+      )
     );
 
     expect(
@@ -86,14 +81,11 @@ describe('BuildKiteBuildsTable', () => {
       )
     );
     render(
-      <MemoryRouter>
-        <ThemeProvider theme={lightTheme}>
-          <ApiProvider apis={apis}>
-            <BuildkiteBuildsTable entity={entityMock} />
-          </ApiProvider>
-        </ThemeProvider>
-      </MemoryRouter>
-    );
+      wrapInTestApp(
+        <ApiProvider apis={apis}>
+          <BuildkiteBuildsTable entity={entityMock} />
+        </ApiProvider>
+    ));
 
     await waitFor(() =>
       expect(postMock).toBeCalledWith(

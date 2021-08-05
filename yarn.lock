@@ -1187,7 +1187,7 @@
     react-use "^17.2.4"
     zen-observable "^0.8.15"
 
-"@backstage/dev-utils@^0.2.0":
+"@backstage/dev-utils@^0.2.4":
   version "0.2.4"
   resolved "https://registry.yarnpkg.com/@backstage/dev-utils/-/dev-utils-0.2.4.tgz#41e5a2efe15bfe32d48d24c0d8088a3adeafc5e6"
   integrity sha512-N7QeORtf18nNie8TQWMfVRWjeujkXPLRH5099E8n2iNfzMdMwNo4OvF/Xv386GPd7YErOk/P8vxOCcns9Tm/9A==
@@ -1284,7 +1284,7 @@
     react "^16.12.0"
     react-dom "^16.12.0"
 
-"@backstage/test-utils@^0.1.12", "@backstage/test-utils@^0.1.16":
+"@backstage/test-utils@^0.1.16":
   version "0.1.16"
   resolved "https://registry.yarnpkg.com/@backstage/test-utils/-/test-utils-0.1.16.tgz#fac4a24d3a8180f869e760848a2f41f3171da667"
   integrity sha512-pSEwTYohH5HDGvvLFu+Xelp70cwgpYvRPoU7KDOBFkNnfQtHAQAHFFcvWKzuucyrGttFukCP29UWuXvUXxwHkg==
@@ -2305,7 +2305,7 @@
     lz-string "^1.4.4"
     pretty-format "^26.6.2"
 
-"@testing-library/jest-dom@^5.10.1", "@testing-library/jest-dom@^5.12.0":
+"@testing-library/jest-dom@^5.10.1":
   version "5.12.0"
   resolved "https://registry.yarnpkg.com/@testing-library/jest-dom/-/jest-dom-5.12.0.tgz#6a5d340b092c44b7bce17a4791b47d9bc2c61443"
   integrity sha512-N9Y82b2Z3j6wzIoAqajlKVF1Zt7sOH0pPee0sUHXHc5cv2Fdn23r+vpWm0MBBoGJtPOly5+Bdx1lnc3CD+A+ow==
