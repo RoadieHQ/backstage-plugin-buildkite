@@ -25,14 +25,11 @@ import {
   UrlPatternDiscovery,
 } from '@backstage/core-app-api';
 import { rest } from 'msw';
-import { msw } from '@backstage/test-utils';
+import {msw, wrapInTestApp} from '@backstage/test-utils';
 import { setupServer } from 'msw/node';
-import { MemoryRouter } from 'react-router-dom';
 import { buildsResponseMock, entityMock } from '../../mocks/mocks';
 import { buildKiteApiRef } from '../..';
 import { BuildkiteApi } from '../../api';
-import { ThemeProvider } from '@material-ui/core';
-import { lightTheme } from '@backstage/theme';
 import BuildkiteBuildsTable from './BuildKiteBuildsTable';
 
 const postMock = jest.fn();
@@ -54,18 +51,16 @@ describe('BuildKiteBuildsTable', () => {
   it('should display a table with the data from the requests', async () => {
     worker.use(
       rest.get(
-        ' http://exampleapi.com/buildkite/api/organizations/rbnetwork/pipelines/example-pipeline/builds?page=1&per_page=5',
+        ' http://exampleapi.com/buildkite/api/organizations/rbnetwork/pipelines/example-pipeline/builds',
         (_, res, ctx) => res(ctx.json(buildsResponseMock))
       )
     );
     const rendered = render(
-      <MemoryRouter>
-        <ThemeProvider theme={lightTheme}>
-          <ApiProvider apis={apis}>
-            <BuildkiteBuildsTable entity={entityMock} />
-          </ApiProvider>
-        </ThemeProvider>
-      </MemoryRouter>
+      wrapInTestApp(
+        <ApiProvider apis={apis}>
+          <BuildkiteBuildsTable entity={entityMock} />
+        </ApiProvider>
+      )
     );
 
     expect(
@@ -81,19 +76,16 @@ describe('BuildKiteBuildsTable', () => {
   it('should display an error on fetch failure', async () => {
     worker.use(
       rest.get(
-        ' http://exampleapi.com/buildkite/api/organizations/rbnetwork/pipelines/example-pipeline/builds?page=1&per_page=5',
+        ' http://exampleapi.com/buildkite/api/organizations/rbnetwork/pipelines/example-pipeline/builds',
         (_, res, ctx) => res(ctx.status(403))
       )
     );
     render(
-      <MemoryRouter>
-        <ThemeProvider theme={lightTheme}>
-          <ApiProvider apis={apis}>
-            <BuildkiteBuildsTable entity={entityMock} />
-          </ApiProvider>
-        </ThemeProvider>
-      </MemoryRouter>
-    );
+      wrapInTestApp(
+        <ApiProvider apis={apis}>
+          <BuildkiteBuildsTable entity={entityMock} />
+        </ApiProvider>
+    ));
 
     await waitFor(() =>
       expect(postMock).toBeCalledWith(
