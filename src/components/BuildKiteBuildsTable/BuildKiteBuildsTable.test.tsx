@@ -54,7 +54,7 @@ describe('BuildKiteBuildsTable', () => {
   it('should display a table with the data from the requests', async () => {
     worker.use(
       rest.get(
-        ' http://exampleapi.com/buildkite/api/organizations/rbnetwork/pipelines/example-pipeline/builds?page=1&per_page=5',
+        ' http://exampleapi.com/buildkite/api/organizations/rbnetwork/pipelines/example-pipeline/builds',
         (_, res, ctx) => res(ctx.json(buildsResponseMock))
       )
     );
@@ -81,7 +81,7 @@ describe('BuildKiteBuildsTable', () => {
   it('should display an error on fetch failure', async () => {
     worker.use(
       rest.get(
-        ' http://exampleapi.com/buildkite/api/organizations/rbnetwork/pipelines/example-pipeline/builds?page=1&per_page=5',
+        ' http://exampleapi.com/buildkite/api/organizations/rbnetwork/pipelines/example-pipeline/builds',
         (_, res, ctx) => res(ctx.status(403))
       )
     );

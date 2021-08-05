@@ -129,8 +129,8 @@ export const CITableView: FC<TableProps> = ({
       },
     ]}
     data={builds ?? []}
-    onChangePage={onChangePage}
-    onChangeRowsPerPage={onChangePageSize}
+    onPageChange={onChangePage}
+    onRowsPerPageChange={onChangePageSize}
     title={
       <Box display="flex" alignItems="center">
         <GitHubIcon />
